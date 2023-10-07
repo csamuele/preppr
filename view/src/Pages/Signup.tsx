@@ -1,34 +1,63 @@
-//signup page with a form with first name, last name, email, password, and confirm password fields and a submit button
-import { Button, Card, CardContent, Container, Grid, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { Button, Card, CardContent, Container, Grid, Typography, TextField } from '@mui/material';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { ErrorMessage } from 'Features/ui';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirm, setConfirm] = useState('');
+    const navigate = useNavigate();
+    const initialValues = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirm: '',
+    };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const validationSchema = Yup.object({
+        firstName: Yup.string().required('Required'),
+        lastName: Yup.string().required('Required'),
+        email: Yup.string().email('Invalid email format').required('Required'),
+        password: Yup.string()
+        .required('Required')
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character'
+        ),
+        confirm: Yup.string().oneOf([Yup.ref('password'), undefined], 'Passwords must match').required('Required'),
+    });
+
+    /**
+     * Handles form submission for user registration.
+     * @param {typeof initialValues} values - The form values to be submitted.
+     * @returns {Promise<void>} - A promise that resolves when the form is submitted successfully.
+     */
+    const handleSubmit = async (values: typeof initialValues): Promise<void> => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ firstName, lastName, email, password }),
+                body: JSON.stringify(values),
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('user registered: ', data);
+                //alert the user that they have successfully registered
+                alert('You have successfully registered!');
+                //log to the console the data returned from the server
+                console.log(`User succesfully registered: ${data}`);
+                //redirect the user to the login page using react router
+                navigate('/login');
             } else {
-                console.log('error registering user');
+                alert('Error registering user');
+                console.log(response);
             }
         } catch (error) {
-            console.log(error);
+            //alert the user that there was an error registering based on the error message
+            alert(error);
         }
-    }
+    };
 
     return (
         <Container maxWidth="sm">
@@ -39,77 +68,48 @@ const Signup = () => {
                             <Typography variant="h5" component="h1" gutterBottom>
                                 Sign Up
                             </Typography>
-                            <form onSubmit={handleSubmit}>
-                                <TextField
-                                    label="First Name"
-                                    type="text"
-                                    name="firstName"
-                                    fullWidth
-                                    margin="normal"
-                                    value={firstName}
-                                    onChange={(event) => setFirstName(event.target.value)}
-                                />
-                                <TextField
-                                    label="Last Name"
-                                    type="text"
-                                    name="lastName"
-                                    fullWidth
-                                    margin="normal"
-                                    value={lastName}
-                                    onChange={(event) => setLastName(event.target.value)}
-                                />
-                                <TextField
-                                    label="Email"
-                                    type="email"
-                                    name="email"
-                                    fullWidth
-                                    margin="normal"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
-                                />
-                                <TextField
-                                    label="Password"
-                                    type="password"
-                                    name="password"
-                                    fullWidth
-                                    margin="normal"
-                                    value={password}
-                                    onChange={(event) => setPassword(event.target.value)}
-                                />
-                                <TextField
-                                    label="Confirm Password"
-                                    type="password"
-                                    name="confirmPassword"
-                                    fullWidth
-                                    margin="normal"
-                                    value={confirm}
-                                    onChange={(event) => setConfirm(event.target.value)}
-                                />
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    fullWidth
-                                    style={{ marginTop: '1rem' }}
-                                >
-                                    Sign Up
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    fullWidth
-                                    style={{ marginTop: '1rem' }}
-                                    href="/login"
-                                >
-                                    Login
-                                </Button>
-                            </form>
+                            <Formik
+                                initialValues={initialValues}
+                                validationSchema={validationSchema}
+                                onSubmit={handleSubmit}
+                            >
+                                <Form>
+                                    <ErrorMessage name="firstName"/>
+                                    <Field name="firstName" as={TextField} label="First Name" fullWidth required margin="normal" />
+                                    <ErrorMessage name="lastName"/>
+                                    <Field name="lastName" as={TextField} label="Last Name" fullWidth required margin="normal" />
+                                    <ErrorMessage name="email" />
+                                    <Field name="email" type="email" as={TextField} label="Email" fullWidth required margin="normal" />
+                                    <ErrorMessage name="password" />
+                                    <Field name="password" type="password" as={TextField} inputProps={{ 'data-testid': 'password-input' }} label="Password" fullWidth required margin="normal" />
+                                    <ErrorMessage name="confirm" />
+                                    <Field name="confirm" type="password" as={TextField} inputProps={{ 'data-testid': 'confirm-password-input' }} label="Confirm Password" fullWidth required margin="normal" />
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        style={{ marginTop: '1rem' }}
+                                    >
+                                        Sign Up
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        fullWidth
+                                        style={{ marginTop: '1rem' }}
+                                        href="/login"
+                                    >
+                                        Login
+                                    </Button>
+                                </Form>
+                            </Formik>
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
         </Container>
-    )
-}
+    );
+};
 
 export default Signup;

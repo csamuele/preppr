@@ -7,8 +7,12 @@ interface UserData {
     hashedPassword: string;
 }
 
+/**
+ * Registers a new user in the database.
+ * @param userData - An object containing user data including first name, last name, email, and hashed password.
+ * @throws Will throw an error if there is a server error.
+ */
 export const registerUser = async (userData: UserData) => {
-    //console.log(pool.)
     try {
         const { firstName, lastName, email, hashedPassword } = userData;
         await pool.query(

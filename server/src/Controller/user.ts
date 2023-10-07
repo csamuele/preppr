@@ -2,6 +2,12 @@ import { registerUser } from "Model";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 
+/**
+ * Creates a new user in the database.
+ * @param req - The request object containing the user's information.
+ * @param res - The response object to send the result of the operation.
+ * @returns A JSON object with a message indicating whether the user was created successfully or not.
+ */
 export const createUser = async (req: Request, res: Response) => {
     try {
         const { firstName, lastName, email, password } = req.body;
