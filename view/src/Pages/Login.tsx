@@ -2,12 +2,48 @@
 //path: view/src/pages/Login.tsx
 
 import { Button, Card, CardContent, Container, Grid, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { ErrorMessage } from 'Features/ui';
+
+const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string().required('Required'),
+});
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+    const navigate = useNavigate();
+    const initialValues = {
+        email: '',
+        password: '',
+    };
+    const handleSubmit = async (values: typeof initialValues): Promise<void> => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                //alert the user that they have successfully logged in
+                alert('You have successfully logged in!');
+                //store the token in local storage
+                localStorage.setItem('token', data.token);
+                //redirect the user to the dashboard page using react router
+                navigate('/dashboard');
+            } else {
+                alert('Error logging in');
+                console.log(response);
+            }
+        } catch (error) {
+            //alert the user that there was an error logging in based on the error message
+            alert(error);
+        }
+    }
     return (
         <Container maxWidth="sm">
             <Grid container justifyContent="center">
@@ -17,59 +53,68 @@ const Login = () => {
                             <Typography variant="h5" component="h1" gutterBottom>
                                 Login
                             </Typography>
-                            <form>
-                                <TextField
-                                    label="Email"
-                                    type="email"
-                                    name="email"
-                                    fullWidth
-                                    margin="normal"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
-                                />
-                                <TextField
-                                    label="Password"
-                                    type="password"
-                                    name="password"
-                                    fullWidth
-                                    margin="normal"
-                                    value={password}
-                                    onChange={(event) => setPassword(event.target.value)}
-                                />
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    fullWidth
-                                    style={{ marginTop: '1rem' }}
-                                >
-                                    Login
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    fullWidth
-                                    style={{ marginTop: '1rem' }}
-                                    href="/signup"
-                                >
-                                    Sign Up
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    fullWidth
-                                    style={{ marginTop: '1rem' }}
-                                    href="/auth/google"
-                                >
-                                    Login with Google
-                                </Button>
-                            </form>
+                            <Formik
+                                initialValues={initialValues}
+                                validationSchema={LoginSchema}
+                                onSubmit={handleSubmit}
+                            >
+                                {({ isSubmitting }) => (
+                                    <Form>
+                                        <Field
+                                            as={TextField}
+                                            label="Email"
+                                            type="email"
+                                            name="email"
+                                            fullWidth
+                                            margin="normal"
+                                        />
+                                        <ErrorMessage name="email"  />
+                                        <Field
+                                            as={TextField}
+                                            label="Password"
+                                            type="password"
+                                            name="password"
+                                            fullWidth
+                                            margin="normal"
+                                        />
+                                        <ErrorMessage name="password" />
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            fullWidth
+                                            style={{ marginTop: '1rem' }}
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? 'Logging in...' : 'Login'}
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            fullWidth
+                                            style={{ marginTop: '1rem' }}
+                                            onClick={() => navigate('/signup')}
+                                        >
+                                            Sign Up
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            fullWidth
+                                            style={{ marginTop: '1rem' }}
+                                            href="/auth/google"
+                                        >
+                                            Login with Google
+                                        </Button>
+                                    </Form>
+                                )}
+                            </Formik>
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
         </Container>
     );
-}
+};
 
 export default Login;

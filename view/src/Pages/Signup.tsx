@@ -46,7 +46,7 @@ const Signup = () => {
                 //alert the user that they have successfully registered
                 alert('You have successfully registered!');
                 //log to the console the data returned from the server
-                console.log(`User succesfully registered: ${data}`);
+                console.log(`User Registered: ${data.userId}`);
                 //redirect the user to the login page using react router
                 navigate('/login');
             } else {

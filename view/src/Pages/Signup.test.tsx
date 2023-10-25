@@ -8,6 +8,8 @@ jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockNavigate,
 }));
+const mockConsoleLog = jest.fn();
+global.console.log = mockConsoleLog;
 
 
 describe('Signup', () => {
@@ -79,11 +81,24 @@ describe('Signup', () => {
 
     fireEvent.click(submitButton);
 
-    await waitFor(() => {
+    await waitFor(async () => {
         //check to make sure the alert function was called with User successfully registered
         expect(mockAlert).toHaveBeenCalledWith('You have successfully registered!');
         //check to make sure the navigate function was called with /login
         expect(mockNavigate).toHaveBeenCalledWith('/login');
+        //get user id from the console log
+        const consoleOutput = mockConsoleLog.mock.calls[0][0];
+        const userIdMatch = consoleOutput.match(/User Registered: (.*)/);
+        const userId = userIdMatch[1];
+        //check to make sure the console log function was called with User Registered: and the user id
+        expect(mockConsoleLog).toHaveBeenCalledWith(`User Registered: ${userId}`);
+        //delete the user from the database
+        await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
     });
   });
 });
