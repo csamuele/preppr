@@ -31,8 +31,6 @@ const Login = () => {
                 const data = await response.json();
                 //alert the user that they have successfully logged in
                 alert('You have successfully logged in!');
-                //store the token in local storage
-                localStorage.setItem('token', data.token);
                 //redirect the user to the dashboard page using react router
                 navigate('/dashboard');
             } else {

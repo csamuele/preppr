@@ -1,5 +1,4 @@
 import { Strategy as LocalStrategy } from 'passport-local';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import { getUserByEmail, getUserById, updateUser } from 'Model';
@@ -33,17 +32,6 @@ export const localStrategy = new LocalStrategy(
     }
 );
 
-export const jwtStrategy = new JwtStrategy({
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
-}, async (jwtPayload, done) => {
-    try {
-        const user = await getUserById(jwtPayload.user_id);
-        return done(null, user);
-    } catch (error) {
-        return done(error);
-    }
-});
 
 
 passport.serializeUser((user: any, done) => {
@@ -61,3 +49,9 @@ passport.deserializeUser(async (id: string, done) => {
     }
 });
 
+export const authenticate = (req: any, res: any, next: any) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).json({ message: 'Not authenticated' });
+}

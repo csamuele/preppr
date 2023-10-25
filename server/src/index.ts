@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import passport from 'passport';
 import session from 'express-session';
 import cors from 'cors';
-import { localStrategy, jwtStrategy } from './Utils/passport-config';
+import { localStrategy } from './Utils/passport-config';
 import { userRoutes } from 'Routes/user';
 
 const app = express();
@@ -13,11 +13,15 @@ app.use(session({
   secret: process.env.SESSION_SECRET as string,
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+  },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(localStrategy);
-passport.use(jwtStrategy);
 
 
 app.use(cors());

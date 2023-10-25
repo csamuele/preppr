@@ -2,7 +2,6 @@ import { registerUser, removeUser, getUserById } from "Model";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import passport from "passport";
-import jwt from "jsonwebtoken";
 import { User } from "@/Model";
 
 
@@ -55,7 +54,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 
 /**
- * Authenticates a user with their credentials and returns a JWT token upon successful login.
+ * Authenticates a user with their credentials and sets the user's sessionId cookie.
  * @param req - The Express request object.
  * @param res - The Express response object.
  * @param next - The Express next function.
@@ -77,20 +76,42 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
                 res.status(500).json({ message: 'Server error' });
                 return;
             }
-            const token = jwt.sign(
-                { user_id: user.user_id },
-                process.env.JWT_SECRET as string,
-                { expiresIn: '2d' }
-            );
+            // res.cookie('connect.sid', req.sessionID, {
+            //     httpOnly: true,
+            //     secure: true,
+            //     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+            // });
+            res.status(200).json({ message: 'Logged in' });
+
             console.log('successfully logged in')
-            res.status(200).json({ token });
         });
     })(req, res, next);
 }
-
+/**
+ * Logs out the current user.
+ * @param req - The Express Request object.
+ * @param res - The Express Response object.
+ */
+export const logout = (req: Request, res: Response) => {
+    req.logout((err: any) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Server error' });
+            return;
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({ message: 'Logged out' });
+    });
+}
+/**
+ * Retrieves the user object for the currently authenticated user.
+ * Excludes the hashedPassword property from the returned user object.
+ * @param req - The Express Request object.
+ * @param res - The Express Response object.
+ * @returns A JSON response containing the user object without the hashedPassword property.
+ */
 export const getUser = async (req: Request, res: Response) => {
-    const userId = req.currentUser!.user_id;
-    const user = await getUserById(userId);
+    const user = req.user as User;
     
     // Exclude hashedPassword property from user object
     const { password, ...userWithoutPassword } = user;
