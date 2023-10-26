@@ -76,11 +76,6 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
                 res.status(500).json({ message: 'Server error' });
                 return;
             }
-            // res.cookie('connect.sid', req.sessionID, {
-            //     httpOnly: true,
-            //     secure: true,
-            //     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-            // });
             res.status(200).json({ message: 'Logged in' });
 
             console.log('successfully logged in')
@@ -100,6 +95,7 @@ export const logout = (req: Request, res: Response) => {
             return;
         }
         res.clearCookie('connect.sid');
+        res.clearCookie('session');
         res.status(200).json({ message: 'Logged out' });
     });
 }

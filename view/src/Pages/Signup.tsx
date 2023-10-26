@@ -3,6 +3,7 @@ import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'Features/ui';
 import { useNavigate } from 'react-router-dom';
+import { useRegisterMutation, UserFormData } from 'App/apiSlice';
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -27,35 +28,18 @@ const Signup = () => {
         confirm: Yup.string().oneOf([Yup.ref('password'), undefined], 'Passwords must match').required('Required'),
     });
 
-    /**
-     * Handles form submission for user registration.
-     * @param {typeof initialValues} values - The form values to be submitted.
-     * @returns {Promise<void>} - A promise that resolves when the form is submitted successfully.
-     */
-    const handleSubmit = async (values: typeof initialValues): Promise<void> => {
+
+
+    const [registerUser, { isLoading }] = useRegisterMutation();
+
+    const handleSubmit = async (user: UserFormData): Promise<void> => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                //alert the user that they have successfully registered
-                alert('You have successfully registered!');
-                //log to the console the data returned from the server
-                console.log(`User Registered: ${data.userId}`);
-                //redirect the user to the login page using react router
+            const response = await registerUser( user );
+            if ('data' in response) {
                 navigate('/login');
-            } else {
-                alert('Error registering user');
-                console.log(response);
             }
-        } catch (error) {
-            //alert the user that there was an error registering based on the error message
-            alert(error);
+        } catch (err) {
+            console.error(err);
         }
     };
 

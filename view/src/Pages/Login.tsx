@@ -6,6 +6,8 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { ErrorMessage } from 'Features/ui';
+import { useLoginMutation, Credentials } from 'App/apiSlice';
+import { useDispatch } from 'Utils/Hooks/useDispatch';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -18,21 +20,18 @@ const Login = () => {
         email: '',
         password: '',
     };
-    const handleSubmit = async (values: typeof initialValues): Promise<void> => {
+    const [loginUser, { isLoading }] = useLoginMutation();
+    const dispatch = useDispatch();
+    const handleSubmit = async (values: Credentials): Promise<void> => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-            if (response.ok) {
-                const data = await response.json();
+            const response = await loginUser(values);
+            if (response) {
                 //alert the user that they have successfully logged in
                 alert('You have successfully logged in!');
+                //set the authenticated state to true
+                console.log(response);
                 //redirect the user to the dashboard page using react router
-                navigate('/dashboard');
+                navigate('/');
             } else {
                 alert('Error logging in');
                 console.log(response);
@@ -40,6 +39,7 @@ const Login = () => {
         } catch (error) {
             //alert the user that there was an error logging in based on the error message
             alert(error);
+
         }
     }
     return (
