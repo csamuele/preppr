@@ -1,15 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-export interface Credentials {
-    email: string;
-    password: string;
-}
-export interface UserFormData {
-    email: string;
-    password: string;
-    confirm: string;
-    firstName: string;
-    lastName: string;
-}
+import { UserFormData, Credentials, UserResponse, RestaurantFormData, RestaurantResponse, Restaurant } from './types';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -40,6 +30,15 @@ export const apiSlice = createApi({
                 url: `/me`,
                 credentials: 'include',
             }),
+            transformResponse: (response: {user: UserResponse}) => {
+                return {
+                    userId: response.user.user_id,
+                    email: response.user.email,
+                    firstName: response.user.first_name,
+                    lastName: response.user.last_name,
+                    lastLogin: response.user.last_login,
+                };
+            }
             
         }),
         logout: builder.mutation({
@@ -48,8 +47,30 @@ export const apiSlice = createApi({
                 method: 'POST',
             }),
         }),
+        getRestaurants: builder.query({
+            query: () => ({
+                url: '/restaurants',
+                credentials: 'include',
+            }),
+            transformResponse: (response: RestaurantResponse[]) => {
+                return response.map((restaurant) => ({
+                    restaurantId: restaurant.restaurant_id,
+                    name: restaurant.name,
+                    description: restaurant.description,
+                    userId: restaurant.user_id,
+                }));
+            },
+        }),
+        createRestaurant: builder.mutation({
+            query: (restaurantFormData: RestaurantFormData) => ({
+                url: '/restaurants',
+                method: 'POST',
+                body: restaurantFormData,
+            }),
+
+        }),
     }),
     
 });
 
-export const {useGetCurrentUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation} = apiSlice;
+export const {useGetCurrentUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation, useCreateRestaurantMutation, useGetRestaurantsQuery} = apiSlice;

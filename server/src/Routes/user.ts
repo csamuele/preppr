@@ -1,8 +1,5 @@
-import express, { Request, Response } from 'express';
-import passport from 'passport';
-import jwt from 'jsonwebtoken';
+import express from 'express';
 import { createUser, deleteUser, login, getUser, logout } from 'Controller';
-import { User } from '@/Model';
 import { authenticate } from '@/Utils';
 
 /**

@@ -3,7 +3,8 @@ import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'Features/ui';
 import { useNavigate } from 'react-router-dom';
-import { useRegisterMutation, UserFormData } from 'App/apiSlice';
+import { useRegisterMutation } from 'App/apiSlice';
+import { UserFormData } from 'App/types';
 
 const Signup = () => {
     const navigate = useNavigate();

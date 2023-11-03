@@ -1,6 +1,4 @@
 import { pool } from 'Model';
-import bcrypt from 'bcrypt';
-import { Strategy } from 'passport-local';
 import { QueryResult } from 'pg';
 
 export interface UserFormData {

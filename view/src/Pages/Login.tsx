@@ -6,7 +6,8 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { ErrorMessage } from 'Features/ui';
-import { useLoginMutation, Credentials } from 'App/apiSlice';
+import { useLoginMutation } from 'App/apiSlice';
+import { Credentials } from 'App/types';
 import { useDispatch } from 'Utils/Hooks/useDispatch';
 
 const LoginSchema = Yup.object().shape({
