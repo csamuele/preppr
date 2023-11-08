@@ -4,8 +4,9 @@ import Login from "Pages/Login";
 import Signup from "Pages/Signup";
 import Dashboard from "Pages/Dashboard";
 import {Header} from 'Features/ui'
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider, useSelector } from "react-redux";
 import {store} from "App/store";
+import { ThemeProvider } from "./Theme";
 //render Header on all routes
 //render Home at the root route
 const router = createBrowserRouter(createRoutesFromElements(
@@ -18,11 +19,14 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path="*" element={<div>Not Found</div>} />
  </>
 ));
+
 const App = () => {
     return (
-        <Provider store={store}>
-            <RouterProvider router={router}/>
-        </Provider>
+            <ReduxProvider store={store}>
+                    <ThemeProvider>
+                        <RouterProvider router={router}/>
+                    </ThemeProvider>
+            </ReduxProvider>
     );
 }
 
