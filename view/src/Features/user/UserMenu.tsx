@@ -103,7 +103,7 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 				onClose={handleCloseUserMenu}
 			>
 				<MenuItem
-					onClick={handleCloseUserMenu}
+					onClick={() => navigate('/profile')}
 				>
 					<Typography textAlign="center">
 						Profile
@@ -113,7 +113,7 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 					onClick={handleCloseUserMenu}
 				>
 					<Typography textAlign="center">
-						Change Restaurant
+						Restaurants
 					</Typography>
 				</MenuItem>
 				<MenuItem onClick={handleDarkMode}>

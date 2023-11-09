@@ -1,15 +1,28 @@
 import { FC } from 'react';
 import {
-	Box, IconButton,
-	Typography, Drawer as MuiDrawer,
+	Box,
+	IconButton,
+	Typography,
+	Drawer as MuiDrawer,
 	List,
 	ListItem,
 	ListItemIcon,
-	ListItemText
+	ListItemText,
 } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
-import { drawerItems } from './DrawerOptions';
+import {
+	Close as CloseIcon,
+	Restaurant as RestaurantIcon,
+	Storage as StorageIcon,
+	MenuBook as MenuBookIcon,
+	Kitchen as KitchenIcon,
+} from '@mui/icons-material';
 
+const drawerItems = [
+	{ text: 'Stations', icon: <KitchenIcon /> },
+	{ text: 'Dishes', icon: <RestaurantIcon /> },
+	{ text: 'Components', icon: <StorageIcon /> },
+	{ text: 'Menus', icon: <MenuBookIcon /> },
+];
 
 export interface DrawerProps {
 	isScreenAboveMd: boolean;
@@ -18,7 +31,12 @@ export interface DrawerProps {
 	drawerWidth: string;
 }
 
-export const Drawer: FC<DrawerProps> = ({ isScreenAboveMd, isDrawerOpen, drawerWidth, handleDrawerClose }) => {
+export const Drawer: FC<DrawerProps> = ({
+	isScreenAboveMd,
+	isDrawerOpen,
+	drawerWidth,
+	handleDrawerClose,
+}) => {
 	return (
 		<MuiDrawer
 			sx={{

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from 'App/apiSlice';
 import { UserFormData } from 'App/types';
 
-const Signup = () => {
+export const Signup = () => {
     const navigate = useNavigate();
     const initialValues = {
         firstName: '',
@@ -97,4 +97,3 @@ const Signup = () => {
     );
 };
 
-export default Signup;

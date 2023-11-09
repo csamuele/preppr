@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Signup from './Signup';
+import {Signup} from './Signup';
 
 const mockAlert = jest.fn();
 global.alert = mockAlert;

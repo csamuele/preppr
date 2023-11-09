@@ -11,6 +11,11 @@ export interface UserFormData {
     firstName: string;
     lastName: string;
 }
+
+export interface UpdateUserFormData {
+    firstName: string;
+    lastName: string;
+}
 export interface UserResponse {
     user_id: string;
     email: string;

@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { UserFormData, Credentials, UserResponse, RestaurantFormData, RestaurantResponse, Restaurant } from './types';
+import { UserFormData, Credentials, UserResponse, RestaurantFormData, RestaurantResponse, Restaurant, UpdateUserFormData } from './types';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -47,6 +47,15 @@ export const apiSlice = createApi({
                 method: 'POST',
             }),
         }),
+        updateUser: builder.mutation({
+            query: (updateUserFormData: UpdateUserFormData) => ({
+                url: '/me',
+                method: 'PUT',
+                body: updateUserFormData,
+                credentials: 'include',
+            }),
+
+        }),
         getRestaurants: builder.query({
             query: () => ({
                 url: '/restaurants',
@@ -73,4 +82,4 @@ export const apiSlice = createApi({
     
 });
 
-export const {useGetCurrentUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation, useCreateRestaurantMutation, useGetRestaurantsQuery} = apiSlice;
+export const {useGetCurrentUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation, useUpdateUserMutation ,useCreateRestaurantMutation, useGetRestaurantsQuery} = apiSlice;

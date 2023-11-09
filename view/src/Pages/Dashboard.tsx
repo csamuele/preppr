@@ -4,7 +4,7 @@ import React from 'react';
 import { Typography, Container, Grid } from '@mui/material';
 import { useGetCurrentUserQuery, useCreateRestaurantMutation, useGetRestaurantsQuery } from 'App/apiSlice';
 import { RestaurantCard } from 'Features/restaurants';
-const Dashboard = () => {
+export const Dashboard = () => {
     const {
         data: user,
         isLoading,
@@ -29,5 +29,3 @@ const Dashboard = () => {
         </Container>
     );
 };
-
-export default Dashboard;

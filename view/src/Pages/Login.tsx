@@ -15,7 +15,7 @@ const LoginSchema = Yup.object().shape({
     password: Yup.string().required('Required'),
 });
 
-const Login = () => {
+export const Login = () => {
     const navigate = useNavigate();
     const initialValues = {
         email: '',
@@ -116,4 +116,3 @@ const Login = () => {
     );
 };
 
-export default Login;

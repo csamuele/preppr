@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Login from './Login';
+import {Login} from './Login';
 
 //check if login page renders with email and password fields with a submit button and a google sso button
 test('renders login page with email and password fields with a submit button and a google sso button', () => {

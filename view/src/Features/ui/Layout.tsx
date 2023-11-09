@@ -33,10 +33,9 @@ export const Layout = () => {
 				handleDrawerOpen={handleDrawerOpen}
 			/>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-				<Toolbar />
 				<Container
 					style={{
-						marginTop: '5rem',
+						marginTop: '3rem',
 						backgroundColor: 'background.default',
 					}}
 				>

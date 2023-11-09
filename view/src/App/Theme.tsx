@@ -33,11 +33,18 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
             palette: {
                 mode: darkMode ? 'dark' : 'light',
             },
+            components: {
+                MuiTypography: {
+                    styleOverrides: {
+                        root: {
+                            color: 'text.primary',
+                        },
+                    },
+                },
+            },
         });
     }, [darkMode]);
     return <MuiThemeProvider theme={theme}>
-        <Box bgcolor="background.default" height='100vh'>
             {children}
-        </Box>
             </MuiThemeProvider>;
 }
