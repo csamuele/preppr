@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import { Container, Grid, Button, CircularProgress } from '@mui/material';
-import { useGetRestaurantsQuery } from 'App/apiSlice';
+import { useGetRestaurantsQuery, useDeleteRestaurantMutation } from 'App/apiSlice';
 import { RestaurantCard, RestaurantNewEdit } from 'Features/restaurants';
 import { Restaurant } from 'App/types';
 export const Restaurants = () => {
@@ -11,6 +11,7 @@ export const Restaurants = () => {
         isLoading: isLoadingRestaurants,
         error: errorRestaurants,
     } = useGetRestaurantsQuery({});
+    const [deleteRestaurant, { isLoading: isDeleting }] = useDeleteRestaurantMutation();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
     const handleNewRestaurant = () => {
 
@@ -25,6 +26,7 @@ export const Restaurants = () => {
     const handleEditRestaurant = (restaurant: Restaurant) => {
         setRestaurant(restaurant);
     }
+    
     const handleClose = () => {
         setRestaurant(null);
     }
@@ -41,6 +43,7 @@ export const Restaurants = () => {
                         name={restaurant.name}
                         description={restaurant.description}
                         onEdit={() => handleEditRestaurant(restaurant)}
+                        onDelete={() => deleteRestaurant(restaurant.restaurantId)}
                     />
                 ))}
                 <Grid item xs={12}>

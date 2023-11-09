@@ -89,6 +89,13 @@ export const apiSlice = createApi({
             }),
             invalidatesTags:['Restaurant'],
         }),
+        deleteRestaurant: builder.mutation({
+            query: (restaurantId: string) => ({
+                url: `/restaurants/${restaurantId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Restaurant'],
+        }),
     }),
     
 });
@@ -102,4 +109,5 @@ export const {
     useCreateRestaurantMutation, 
     useGetRestaurantsQuery,
     useUpdateRestaurantMutation,
+    useDeleteRestaurantMutation,
 } = apiSlice;

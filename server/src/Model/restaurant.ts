@@ -69,6 +69,12 @@ export const updateRestaurant = async (restaurantData: RestaurantData): Promise<
     }
 }
 
+/**
+ * Fetches a restaurant from the database by its ID.
+ * @param restaurant_id - The ID of the restaurant to fetch.
+ * @returns A Promise that resolves to a RestaurantData object representing the fetched restaurant.
+ * @throws An error if there is a server error.
+ */
 export const fetchRestaurant = async (restaurant_id: string): Promise<RestaurantData> => {
     try {
         const result = await pool.query(
@@ -76,6 +82,23 @@ export const fetchRestaurant = async (restaurant_id: string): Promise<Restaurant
             [restaurant_id]
         );
         return result.rows[0] as RestaurantData;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Server error');
+    }
+}
+
+/**
+ * Deletes a restaurant from the database.
+ * @param restaurant_id - The ID of the restaurant to delete.
+ * @throws An error if there is a server error.
+ */
+export const deleteRestaurant = async (restaurant_id: string): Promise<void> => {
+    try {
+        await pool.query(
+            `DELETE FROM restaurants WHERE restaurant_id = $1`,
+            [restaurant_id]
+        );
     } catch (error) {
         console.error(error);
         throw new Error('Server error');

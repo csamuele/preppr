@@ -3,11 +3,12 @@ import {
 	Box, Button, Typography,
 	Menu,
 	MenuItem, Avatar,
-	Tooltip, Switch
+	Tooltip, Switch,
+	CircularProgress
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { useGetCurrentUserQuery } from 'App/apiSlice';
+import { useGetCurrentUserQuery, useLogoutMutation } from 'App/apiSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'Utils/Hooks/useDispatch';
 import { selectIsDarkMode, setDarkMode } from 'Features/ui';
@@ -29,6 +30,7 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 			navigate('/login');
 		}
 	}, [error, navigate]);
+	const [logoutUser, { isLoading: isLoggingOut }] = useLogoutMutation();
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -44,6 +46,25 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 		dispatch(setDarkMode(!darkMode));
 		Cookies.set('isDarkMode', (!darkMode).toString());
 	};
+	const handleLogout = async () => {
+		try {
+			const response = await logoutUser({});
+			if ('data' in response) {
+				//alert the user that they have successfully logged out
+				alert('You have successfully logged out!');
+				//set the authenticated state to false
+				//redirect the user to the login page using react router
+				navigate('/login');
+			} else {
+				alert('Error logging out');
+			}
+		} catch (error) {
+			alert(error);
+		}
+	}
+	if (isLoadingUser) {
+		return <CircularProgress />;
+	}
 	return (
 		<>
 			<Tooltip title="Open settings">
@@ -127,7 +148,7 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 						checked={darkMode} />
 				</MenuItem>
 				<MenuItem
-					onClick={handleCloseUserMenu}
+					onClick={handleLogout}
 				>
 					<Typography textAlign="center">
 						Logout
