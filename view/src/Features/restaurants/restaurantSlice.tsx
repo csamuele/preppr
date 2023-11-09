@@ -1,14 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "App/store";
 interface RestaurantState {
     currentRestaurant: {
         restaurantId: string;
-        name: string;
     };
     }
+const storedRestaurantId = localStorage.getItem('currentRestaurantId');
 const initialState = {
   currentRestaurant: {
-    restaurantId: '',
-    name: '',
+    restaurantId: storedRestaurantId || '',
   },
 };
 
@@ -16,12 +16,12 @@ const restaurantSlice = createSlice({
   name: 'restaurant',
   initialState,
   reducers: {
-    setCurrentRestaurant(state, action) {
+    setCurrentRestaurant(state, action: PayloadAction<{ restaurantId: string  }>) {
       state.currentRestaurant = action.payload;
     },
   },
 });
 
 export const { setCurrentRestaurant } = restaurantSlice.actions;
-export const selectCurrentRestaurant = (state: RestaurantState) => state.currentRestaurant;
+export const selectCurrentRestaurant = (state: RootState) => state.restaurant.currentRestaurant;
 export const restaurantReducer = restaurantSlice.reducer;

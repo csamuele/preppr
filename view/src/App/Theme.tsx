@@ -5,7 +5,7 @@ import { useDispatch } from 'Utils/Hooks/useDispatch';
 import { setDarkMode } from 'Features/ui';
 import { useSelector } from 'react-redux';
 import { selectIsDarkMode } from 'Features/ui';
-import { useMediaQuery } from '@mui/material';
+import { useMediaQuery, Box } from '@mui/material';
 
 
 import { ReactNode } from 'react';
@@ -34,6 +34,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
                 mode: darkMode ? 'dark' : 'light',
             },
         });
-    }, [isDarkMode]);
-    return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+    }, [darkMode]);
+    return <MuiThemeProvider theme={theme}>
+        <Box bgcolor="background.default" height='100vh'>
+            {children}
+        </Box>
+            </MuiThemeProvider>;
 }
