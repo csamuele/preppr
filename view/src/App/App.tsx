@@ -1,5 +1,5 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
-import {Login, Dashboard, Profile, Signup} from "Pages";
+import {Login, Restaurants, Profile, Signup} from "Pages";
 //import Login from "Pages/Login";
 import {Layout} from 'Features/ui'
 import { Provider as ReduxProvider, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard/>} />
+            <Route path="/" element={<Restaurants/>} />
             <Route path="/profile" element={<Profile />} />
 
         </Route>

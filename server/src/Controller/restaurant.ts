@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { insertRestaurant, fetchUserRestaurants, User } from "@/Model";
+import { insertRestaurant, fetchUserRestaurants, User, updateRestaurant, fetchRestaurant } from "@/Model";
 
 /**
  * Creates a new restaurant in the database.
@@ -44,4 +44,33 @@ export const getUserRestaurants = async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).json({ message: "Server error" }); 
     }
+}
+
+export const handleRestaurantUpdate = async (req: Request, res: Response) => {
+    try {
+        const { name, description } = req.body;
+        const { restaurantId } = req.params;
+        if (name.length > 50) {
+            return res.status(400).json({ message: "Name can't be longer than 50 characters" });
+        }
+        if (description.length > 1000) {
+            return res.status(400).json({ message: "Description can't be longer than 1000 characters" });
+        }
+        const user = req.user as User;
+        const restaurant = await fetchRestaurant(restaurantId);
+        if (restaurant.user_id !== user.user_id) {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        await updateRestaurant({
+            restaurant_id: restaurantId,
+            name,
+            description,
+            user_id: user.user_id,
+        });
+        res.status(200).json({ message: "Restaurant updated" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+
 }

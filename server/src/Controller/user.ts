@@ -1,4 +1,4 @@
-import { registerUser, removeUser, getUserById } from "Model";
+import { registerUser, removeUser, updateUser } from "Model";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import passport from "passport";
@@ -113,4 +113,23 @@ export const getUser = async (req: Request, res: Response) => {
     const { password, ...userWithoutPassword } = user;
 
     res.status(200).json({ user: userWithoutPassword });
+}
+
+/**
+ * Handles updating a user's first name and/or last name.
+ * @param req - The Express Request object.
+ * @param res - The Express Response object.
+ * @returns A JSON response containing the updated user object.
+ */
+export const handleUserUpdate = async (req: Request, res: Response) => {
+    const user = req.user as User;
+    const { firstName, lastName } = req.body;
+    //check if body is not empty
+    if (!firstName && !lastName) {
+        res.status(400).json({ message: "No data was provided" });
+        return;
+    }
+
+    const updatedUser = await updateUser(user.user_id, { first_name: firstName, last_name: lastName });
+    res.status(200).json(updatedUser);
 }

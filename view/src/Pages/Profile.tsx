@@ -10,6 +10,8 @@ import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'Features/ui';
 import { useGetCurrentUserQuery, useUpdateUserMutation } from 'App/apiSlice';
+ 
+
 
 const validationSchema = Yup.object().shape({
 	firstName: Yup.string().required('First name is required'),
@@ -18,8 +20,20 @@ const validationSchema = Yup.object().shape({
 
 export const Profile: FC = () => {
 	const { data: user, isLoading, error } = useGetCurrentUserQuery({});
-	const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+	const [updateUser, { isLoading: isUpdating, data: updatedUser }] = useUpdateUserMutation();
+    const handleSubmit = async (values: {firstName:string, lastName:string}): Promise<void> => {
+        try {
+            const response = await updateUser(values);
+            if (response) {
 
+                alert('You have successfully updated your profile!');
+            } else {
+                alert('Error updating profile');
+            }
+        } catch (error) {
+            alert(error);
+        }
+    }
 	if (isLoading) {
 		return <CircularProgress />;
 	}
@@ -32,9 +46,7 @@ export const Profile: FC = () => {
 					lastName: user?.lastName ?? '',
 				}}
 				validationSchema={validationSchema}
-				onSubmit={async (values) => {
-					await updateUser(values);
-				}}
+				onSubmit={handleSubmit}
 			>
 				{({ errors, touched }) => (
 					<Form>

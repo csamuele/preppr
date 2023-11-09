@@ -5,9 +5,10 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:8000/api',
         //make every request include credentials
-
+    credentials: 'include',
 }),
 
+    tagTypes: ['User', 'Restaurant'],
     endpoints: (builder) => ({
         register: builder.mutation({
             query: (userFormData: UserFormData) => ({
@@ -38,8 +39,8 @@ export const apiSlice = createApi({
                     lastName: response.user.last_name,
                     lastLogin: response.user.last_login,
                 };
-            }
-            
+            },
+            providesTags: ['User']
         }),
         logout: builder.mutation({
             query: () => ({
@@ -54,7 +55,7 @@ export const apiSlice = createApi({
                 body: updateUserFormData,
                 credentials: 'include',
             }),
-
+            invalidatesTags: ['User'],
         }),
         getRestaurants: builder.query({
             query: () => ({
@@ -69,6 +70,7 @@ export const apiSlice = createApi({
                     userId: restaurant.user_id,
                 }));
             },
+            providesTags: ['Restaurant'],
         }),
         createRestaurant: builder.mutation({
             query: (restaurantFormData: RestaurantFormData) => ({
@@ -76,10 +78,28 @@ export const apiSlice = createApi({
                 method: 'POST',
                 body: restaurantFormData,
             }),
+            invalidatesTags: ['Restaurant'],
 
+        }),
+        updateRestaurant: builder.mutation({
+            query: ({restaurantId, ...restaurantFormData}: {restaurantId: string} & RestaurantFormData) => ({
+                url: `/restaurants/${restaurantId}`,
+                method: 'PUT',
+                body: restaurantFormData,
+            }),
+            invalidatesTags:['Restaurant'],
         }),
     }),
     
 });
 
-export const {useGetCurrentUserQuery, useLoginMutation, useRegisterMutation, useLogoutMutation, useUpdateUserMutation ,useCreateRestaurantMutation, useGetRestaurantsQuery} = apiSlice;
+export const {
+    useGetCurrentUserQuery, 
+    useLoginMutation, 
+    useRegisterMutation, 
+    useLogoutMutation, 
+    useUpdateUserMutation ,
+    useCreateRestaurantMutation, 
+    useGetRestaurantsQuery,
+    useUpdateRestaurantMutation,
+} = apiSlice;

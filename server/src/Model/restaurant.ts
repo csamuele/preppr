@@ -50,3 +50,34 @@ export const fetchUserRestaurants = async (user_id: string): Promise<RestaurantD
         throw new Error('Server error');
     }
 }
+
+/**
+ * Updates a restaurant's name and description in the database.
+ * @param restaurantData An object containing the restaurant ID, name, and description.
+ * @throws Will throw an error if there is a server error.
+ */
+export const updateRestaurant = async (restaurantData: RestaurantData): Promise<void> => {
+    try {
+        const {restaurant_id, name, description} = restaurantData;
+        await pool.query(
+            `UPDATE restaurants SET name = $1, description = $2 WHERE restaurant_id = $3`,
+            [name, description, restaurant_id]
+        );
+    } catch (error) {
+        console.error(error);
+        throw new Error('Server error');
+    }
+}
+
+export const fetchRestaurant = async (restaurant_id: string): Promise<RestaurantData> => {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM restaurants WHERE restaurant_id = $1`,
+            [restaurant_id]
+        );
+        return result.rows[0] as RestaurantData;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Server error');
+    }
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, deleteUser, login, getUser, logout } from 'Controller';
+import { createUser, deleteUser, login, getUser, logout, handleUserUpdate } from 'Controller';
 import { authenticate } from '@/Utils';
 
 /**
@@ -12,3 +12,4 @@ userRoutes.post('/login', login);
 userRoutes.post('/logout', logout);
 userRoutes.delete('/users/:userId', deleteUser);
 userRoutes.get('/me', authenticate ,getUser);
+userRoutes.put('/me', authenticate, handleUserUpdate);
