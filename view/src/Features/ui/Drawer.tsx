@@ -15,16 +15,17 @@ export interface DrawerProps {
 	isScreenAboveMd: boolean;
 	isDrawerOpen: boolean;
 	handleDrawerClose: () => void;
+	drawerWidth: string;
 }
 
-export const Drawer: FC<DrawerProps> = ({ isScreenAboveMd, isDrawerOpen, handleDrawerClose }) => {
+export const Drawer: FC<DrawerProps> = ({ isScreenAboveMd, isDrawerOpen, drawerWidth, handleDrawerClose }) => {
 	return (
 		<MuiDrawer
 			sx={{
-				width: 240,
+				width: drawerWidth,
 				flexShrink: 0,
 				'& .MuiDrawer-paper': {
-					width: 240,
+					width: drawerWidth,
 					boxSizing: 'border-box',
 				},
 			}}
