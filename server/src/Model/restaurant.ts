@@ -1,10 +1,14 @@
 import {pool} from 'Model';
-import {QueryResult} from 'pg';
 
-export interface RestaurantFormData {
+export interface CreateRestaurantFormData {
     name: string;
     description: string;
     user_id: string;
+}
+export interface UpdateRestaurantFormData {
+    restaurant_id: string;
+    name: string;
+    description: string;
 }
 export interface RestaurantData {
     restaurant_id: string;
@@ -12,13 +16,14 @@ export interface RestaurantData {
     description: string;
     user_id: string;
 }
+
 /**
  * Registers a new restaurant in the database.
  * @param restaurantData - The data for the new restaurant.
  * @returns The ID of the newly created restaurant.
  * @throws An error if there is a server error.
  */
-export const insertRestaurant = async (restaurantData: RestaurantFormData): Promise<string> => {
+export const insertRestaurant = async (restaurantData: CreateRestaurantFormData): Promise<string> => {
     try {
         const {name, description, user_id} = restaurantData;
         const result = await pool.query(
@@ -56,7 +61,7 @@ export const fetchUserRestaurants = async (user_id: string): Promise<RestaurantD
  * @param restaurantData An object containing the restaurant ID, name, and description.
  * @throws Will throw an error if there is a server error.
  */
-export const updateRestaurant = async (restaurantData: RestaurantData): Promise<void> => {
+export const updateRestaurant = async (restaurantData: UpdateRestaurantFormData): Promise<void> => {
     try {
         const {restaurant_id, name, description} = restaurantData;
         await pool.query(

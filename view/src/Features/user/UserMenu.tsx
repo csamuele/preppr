@@ -131,7 +131,7 @@ export const UserMenu: FC<UserMenuProps> = ({ isScreenAboveMd }) => {
 					</Typography>
 				</MenuItem>
 				<MenuItem
-					onClick={handleCloseUserMenu}
+					onClick={() => navigate('/restaurants')}
 				>
 					<Typography textAlign="center">
 						Restaurants

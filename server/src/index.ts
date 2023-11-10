@@ -5,7 +5,7 @@ import passport from 'passport';
 import session from 'express-session';
 import cors from 'cors';
 import { localStrategy } from './Utils/passport-config';
-import { userRoutes, restaurantRoutes } from 'Routes';
+import { userRoutes, restaurantRoutes, stationRoutes } from 'Routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +34,7 @@ app.use(express.json());
 
 app.use('/api', userRoutes);
 app.use('/api', restaurantRoutes);
+app.use('/api', stationRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -37,6 +37,7 @@ export interface RestaurantFormData {
     description: string;
 }
 
+
 export interface RestaurantResponse {
     restaurant_id: string;
     name: string;

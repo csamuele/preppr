@@ -27,9 +27,7 @@ export const Restaurants = () => {
         setRestaurant(restaurant);
     }
     
-    const handleClose = () => {
-        setRestaurant(null);
-    }
+
 
     if ( isLoadingRestaurants) {
         return <CircularProgress />;
@@ -53,7 +51,7 @@ export const Restaurants = () => {
                 </Grid>
             </Grid>
             <RestaurantNewEdit
-                onClose={handleClose}
+                onClose={() => setRestaurant(null)}
                 restaurant={restaurant}
             />
         </Container>

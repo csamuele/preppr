@@ -1,5 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { insertRestaurant, fetchUserRestaurants, User, updateRestaurant, fetchRestaurant, deleteRestaurant } from "@/Model";
+import { createOwnershipCheckMiddleware } from "@/Utils";
+
+/**
+ * Middleware function that checks if the authenticated user owns the restaurant.
+ * @param req The request object containing the restaurant ID.
+ * @param res The response object to send an error if the user doesn't own the restaurant.
+ */
+export const checkRestaurantOwnership = createOwnershipCheckMiddleware(fetchRestaurant, "restaurant");
 
 /**
  * Creates a new restaurant in the database.
@@ -55,23 +63,17 @@ export const getUserRestaurants = async (req: Request, res: Response) => {
 export const handleRestaurantUpdate = async (req: Request, res: Response) => {
     try {
         const { name, description } = req.body;
-        const { restaurantId } = req.params;
+        const { id } = req.params;
         if (name.length > 50) {
             return res.status(400).json({ message: "Name can't be longer than 50 characters" });
         }
         if (description.length > 1000) {
             return res.status(400).json({ message: "Description can't be longer than 1000 characters" });
         }
-        const user = req.user as User;
-        const restaurant = await fetchRestaurant(restaurantId);
-        if (restaurant.user_id !== user.user_id) {
-            return res.status(403).json({ message: "Forbidden" });
-        }
         await updateRestaurant({
-            restaurant_id: restaurantId,
+            restaurant_id: id,
             name,
             description,
-            user_id: user.user_id,
         });
         res.status(200).json({ message: "Restaurant updated" });
     } catch (error) {
@@ -89,13 +91,8 @@ export const handleRestaurantUpdate = async (req: Request, res: Response) => {
  */
 export const handleRestaurantDelete = async (req: Request, res: Response) => {
     try {
-        const { restaurantId } = req.params;
-        const user = req.user as User;
-        const restaurant = await fetchRestaurant(restaurantId);
-        if (restaurant.user_id !== user.user_id) {
-            return res.status(403).json({ message: "Forbidden" });
-        }
-        await deleteRestaurant(restaurantId);
+        const { id } = req.params;
+        await deleteRestaurant(id);
         res.status(200).json({ message: "Restaurant deleted" });
     } catch (error) {
         console.error(error);

@@ -8,7 +8,9 @@ import {
 	ListItem,
 	ListItemIcon,
 	ListItemText,
+	ListItemButton
 } from '@mui/material';
+import {NavLink, useNavigate} from 'react-router-dom'
 import {
 	Close as CloseIcon,
 	Restaurant as RestaurantIcon,
@@ -18,10 +20,10 @@ import {
 } from '@mui/icons-material';
 
 const drawerItems = [
-	{ text: 'Stations', icon: <KitchenIcon /> },
-	{ text: 'Dishes', icon: <RestaurantIcon /> },
-	{ text: 'Components', icon: <StorageIcon /> },
-	{ text: 'Menus', icon: <MenuBookIcon /> },
+	{ text: 'Stations', icon: <KitchenIcon />, to: '/' },
+	{ text: 'Dishes', icon: <RestaurantIcon />, to: '/dishes'},
+	{ text: 'Components', icon: <StorageIcon />, to: '/components' },
+	{ text: 'Menus', icon: <MenuBookIcon />, to: '/menus' },
 ];
 
 export interface DrawerProps {
@@ -37,6 +39,7 @@ export const Drawer: FC<DrawerProps> = ({
 	drawerWidth,
 	handleDrawerClose,
 }) => {
+	const navigate = useNavigate();
 	return (
 		<MuiDrawer
 			sx={{
@@ -83,10 +86,10 @@ export const Drawer: FC<DrawerProps> = ({
 
 			<List>
 				{drawerItems.map((item, index) => (
-					<ListItem key={index}>
-						<ListItemIcon>{item.icon}</ListItemIcon>
-						<ListItemText primary={item.text} />
-					</ListItem>
+					<ListItemButton key={index} onClick={()=> navigate(item.to)}>
+							<ListItemIcon>{item.icon}</ListItemIcon>
+							<ListItemText primary={item.text} />
+					</ListItemButton>
 				))}
 			</List>
 		</MuiDrawer>

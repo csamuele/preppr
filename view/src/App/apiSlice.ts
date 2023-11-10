@@ -1,5 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { UserFormData, Credentials, UserResponse, RestaurantFormData, RestaurantResponse, Restaurant, UpdateUserFormData } from './types';
+import { UserFormData, Credentials, UserResponse, RestaurantFormData, RestaurantResponse, UpdateUserFormData, User } from './types';
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from './store';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -8,7 +10,7 @@ export const apiSlice = createApi({
     credentials: 'include',
 }),
 
-    tagTypes: ['User', 'Restaurant'],
+    tagTypes: ['User', 'Restaurant', 'Station'],
     endpoints: (builder) => ({
         register: builder.mutation({
             query: (userFormData: UserFormData) => ({
@@ -111,3 +113,9 @@ export const {
     useUpdateRestaurantMutation,
     useDeleteRestaurantMutation,
 } = apiSlice;
+
+const selectCurrentUser = apiSlice.endpoints.getCurrentUser.select({});
+export const selectCurrentUserId = createSelector(
+    selectCurrentUser,
+    (currentUser) => currentUser.data?.userId
+);
